@@ -18,6 +18,9 @@ int boxHeight;
 int maxFallen;
 int countEmptySpace;
 
+// 추가
+int boxTop[100];
+
 int main() {
   ios::sync_with_stdio(false);
   cin.tie(nullptr);
@@ -30,39 +33,28 @@ int main() {
 
     // init
     maxFallen = 0;
-    for (int i = 0; i < roomWidth; ++i) {     // 90도 회전하기 때문에 roomWidth를 세로로 생각
-      for (int j = 0; j < roomHeight; ++j) {  // 마찬가지로 roomHeight를 가로로 생각
+    for (int i = 0; i < roomWidth; ++i) {
+      for (int j = 0; j < roomWidth; ++j) {
         room[i][j] = EMPTY;
       }
     }
 
     for (int i = 0; i < roomWidth; ++i) {
-      cin >> boxHeight;
-      for (int j = 0; j < boxHeight; ++j) {
+      cin >> boxTop[i];
+      for (int j = 0; j < boxTop[i]; ++j) {
         room[i][j] = BOX;
       }
     }
 
-    // 각 상자의 낙차를 구한다: O(n^2)
     for (int i = 0; i < roomWidth; ++i) {
-      int flag = 0;
-
-      for (int j = 0; j < roomHeight; ++j) {
-        // room[i][j]가 박스일 때 빈칸의 개수를 셈으로써 낙차를 구한다.
-        if (room[i][j] == BOX) {
-          flag = 1;
-
-          countEmptySpace = 0;
-          for (int k = i + 1; k < roomWidth; ++k) {
-            if (room[k][j] == EMPTY) countEmptySpace++;
-          }
-
-          // 이전에 구한 낙차보다 현재 낙차가 크다면 업데이트한다.
-          if (countEmptySpace > maxFallen) maxFallen = countEmptySpace;
+      if (boxTop[i] > 0) {
+        countEmptySpace = 0;
+        for (int j = i + 1; j < roomWidth; ++j) {
+          if (room[j][boxTop[i] - 1] == EMPTY) countEmptySpace++;
         }
-      }
 
-      if (flag) break;
+        if (countEmptySpace > maxFallen) maxFallen = countEmptySpace;
+      }
     }
 
     cout << "#" << T << ' ';
